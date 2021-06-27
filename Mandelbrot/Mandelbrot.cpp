@@ -60,7 +60,7 @@ void getColor(const Complex& z, uint8_t& r, uint8_t& g, uint8_t& b)
     const double r0 = 0.0, r1 = 1.0;
     const double g0 = 0.0, g1 = 1.0;
     const double b0 = 0.5, b1 = 1.0;
-    const int MAX_ITER = 100;
+    const int MAX_ITER = 200;
     Complex z_n = z;
     for (int i = 0; i < MAX_ITER; ++i) {
         z_n = square(z_n) + z;
@@ -82,8 +82,8 @@ void getColor(const Complex& z, uint8_t& r, uint8_t& g, uint8_t& b)
 int main()
 {
     // Create image frame buffer.
-    const int width = 1920;
-    const int height = 1080;
+    const int width = 3840;
+    const int height = 3000;
     RgbFrame frame;
     frame.width = width;
     frame.height = height;
@@ -91,9 +91,9 @@ int main()
 
     // Define rectangle on the complex plane which will be used to create the image.
     double aspect_ratio = static_cast<double>(height) / width;
-    double rect_width = 4.0;
+    double rect_width = 3.0;
     double rect_height = aspect_ratio * rect_width;
-    const Complex center = {-1.0, 0.0};
+    const Complex center = {-0.6, 0.0};
     Complex top_left = center + Complex{-rect_width / 2, rect_height / 2};
 
     // Loop through each pixel and get the color of the corresponding point on the complex plane.
