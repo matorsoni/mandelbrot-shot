@@ -36,6 +36,11 @@ struct Complex
     double y;
 };
 
+Complex operator+(const Complex& z1, const Complex& z2)
+{
+    return Complex{z1.x + z2.x, z1.y + z2.y};
+}
+
 Complex square(const Complex& z)
 {
     const auto x = z.x;
@@ -52,29 +57,33 @@ double radius2(const Complex& z)
 
 void getColor(const Complex& z, uint8_t& r, uint8_t& g, uint8_t& b)
 {
-    const double alpha = radius2(z);
-    if (alpha > 1.0) {
-        r = 0;
-        g = 0;
-        b = 0;
-        return;
+    const double r0 = 0.0, r1 = 1.0;
+    const double g0 = 0.0, g1 = 1.0;
+    const double b0 = 0.5, b1 = 1.0;
+    const int MAX_ITER = 100;
+    Complex z_n = z;
+    for (int i = 0; i < MAX_ITER; ++i) {
+        z_n = square(z_n) + z;
+        if (radius2(z_n) > 4) {
+            const double alpha = static_cast<double>(i) / MAX_ITER;
+            r = static_cast<uint8_t>(255 * (r0 * (1.0 - alpha) + r1 * alpha));
+            g = static_cast<uint8_t>(255 * (g0 * (1.0 - alpha) + g1 * alpha));
+            b = static_cast<uint8_t>(255 * (b0 * (1.0 - alpha) + b1 * alpha));
+            return;
+        }
     }
 
-    const double r0 = 1.0, r1 = 1.0;
-    const double g0 = 0.0, g1 = 1.0;
-    const double b0 = 1.0, b1 = 0.0;
-
-    r = static_cast<uint8_t>(255 * (r0 * (1.0 - alpha) + r1 * alpha));
-    g = static_cast<uint8_t>(255 * (g0 * (1.0 - alpha) + g1 * alpha));
-    b = static_cast<uint8_t>(255 * (b0 * (1.0 - alpha) + b1 * alpha));
+    r = 0;
+    g = 0;
+    b = 0;
 }
 
 // Main -------------------------------------
 int main()
 {
     // Create image frame buffer.
-    const int width = 800;
-    const int height = 800;
+    const int width = 1920;
+    const int height = 1080;
     RgbFrame frame;
     frame.width = width;
     frame.height = height;
@@ -82,9 +91,10 @@ int main()
 
     // Define rectangle on the complex plane which will be used to create the image.
     double aspect_ratio = static_cast<double>(height) / width;
-    Complex top_left = {-2.0, 2.0};
     double rect_width = 4.0;
     double rect_height = aspect_ratio * rect_width;
+    const Complex center = {-1.0, 0.0};
+    Complex top_left = center + Complex{-rect_width / 2, rect_height / 2};
 
     // Loop through each pixel and get the color of the corresponding point on the complex plane.
     auto ptr = frame.buffer;
