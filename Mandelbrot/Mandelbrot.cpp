@@ -2,13 +2,6 @@
 #include <new>
 #include <string>
 
-// RgbFrame -------------------------------------
-struct RgbFrame
-{
-    uint8_t* buffer;
-    int width;
-    int height;
-};
 
 void dumpAsPpm(uint8_t* buffer, int width, int height, const std::string& filename)
 {
@@ -84,10 +77,7 @@ int main()
     // Create image frame buffer.
     const int width = 3840;
     const int height = 3000;
-    RgbFrame frame;
-    frame.width = width;
-    frame.height = height;
-    frame.buffer = new uint8_t[width * height * 3];
+    uint8_t* frame_buffer = new uint8_t[width * height * 3];
 
     // Define rectangle on the complex plane which will be used to create the image.
     double aspect_ratio = static_cast<double>(height) / width;
@@ -97,9 +87,9 @@ int main()
     Complex top_left = center + Complex{-rect_width / 2, rect_height / 2};
 
     // Loop through each pixel and get the color of the corresponding point on the complex plane.
-    auto ptr = frame.buffer;
-    double dx = rect_width / frame.width;
-    double dy = -rect_height / frame.height;
+    auto ptr = frame_buffer;
+    double dx = rect_width / width;
+    double dy = -rect_height / height;
     Complex z = top_left;
     uint8_t r = 255, g = 0, b = 255;
     for (int row = 0; row < height; ++row) {
@@ -116,8 +106,8 @@ int main()
         z = top_left;
     }
 
-    dumpAsPpm(frame.buffer, width, height, "test.ppm");
+    dumpAsPpm(frame_buffer, width, height, "test.ppm");
 
-    delete[] frame.buffer;
+    delete[] frame_buffer;
     return 0;
 }
