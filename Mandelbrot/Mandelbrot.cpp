@@ -52,9 +52,9 @@ double radius2(const Complex& z)
 
 void getColor(const Complex& c, uint8_t& r, uint8_t& g, uint8_t& b)
 {
-    const double r0 = 0.0, r1 = 1.0;
+    const double r0 = 0.4, r1 = 1.0;
     const double g0 = 0.0, g1 = 1.0;
-    const double b0 = 0.5, b1 = 1.0;
+    const double b0 = 0.0, b1 = 0.0;
     const int MAX_ITER = 200;
     Complex z_n = c;
     // Compute Mandelbrot iteration.
