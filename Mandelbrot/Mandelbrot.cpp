@@ -1,3 +1,4 @@
+#include <cmath>
 #include <fstream>
 #include <new>
 #include <string>
@@ -84,9 +85,10 @@ int main()
     Complex top_left = center + Complex{-rect_width / 2, rect_height / 2};
 
     // Create image frame buffer.
-    const int pixel_density = 1000;
-    const int width = static_cast<int>(rect_width * pixel_density);
-    const int height = static_cast<int>(rect_height * pixel_density);
+    const double aspect_ratio = rect_height / rect_width;
+    const int image_resolution = 12e6;
+    const int width = static_cast<int>(sqrt(image_resolution / aspect_ratio));
+    const int height = static_cast<int>(aspect_ratio * width);
     uint8_t* frame_buffer = new uint8_t[width * height * 3];
 
     // Loop through each pixel and get the color of the corresponding point on the complex plane.
