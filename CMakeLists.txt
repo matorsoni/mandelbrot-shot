@@ -4,6 +4,7 @@ project(mandelbrot-shot)
 
 add_executable(
     zoom
+    deps/glad-4.0-core/src/glad.c
     src/main.cpp
 )
 
@@ -12,4 +13,11 @@ target_include_directories(
     PRIVATE
         deps/glfw/include
         deps/glad-4.0-core/include
+)
+
+add_subdirectory(deps/glfw)
+
+target_link_libraries(
+    zoom
+    glfw
 )
