@@ -42,11 +42,12 @@ int main()
     std::cout << "OpenGL vendor: " << glGetString(GL_VENDOR) << "\n";
 
     // Setup quad.
+    const float l = 1.0f;
     const float quad[12] = {
-        0.5f, 0.5f, 0.0f,
-        -0.5f, 0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
+        l, l, 0.0f,
+        -l, l, 0.0f,
+        -l, -l, 0.0f,
+        l, -l, 0.0f,
     };
     const unsigned int indices[6] = {
         0, 1, 2,
