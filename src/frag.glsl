@@ -2,6 +2,9 @@
 
 out vec4 frag_color;
 
+uniform float u_zoom;
+uniform vec2 u_center;
+
 float WIDTH = 640.0;
 float HEIGHT = 480.0;
 vec3 C1 = vec3(0.4, 0.0, 0.0);
@@ -37,9 +40,13 @@ vec3 mandelbrot(vec2 p)
 
 void main()
 {
+    float ratio = WIDTH / HEIGHT;
     vec2 p_ = gl_FragCoord.xy / vec2(WIDTH, HEIGHT);
     vec2 p = 2.0*p_ - vec2(1.0);
-    p.x *= WIDTH / HEIGHT;
+    p.x *= ratio;
 
-    frag_color = vec4(mandelbrot(p), 1.0);
+    // Locate corresponding point in C^2
+    vec2 c = u_center + p / u_zoom;
+
+    frag_color = vec4(mandelbrot(c), 1.0);
 }
