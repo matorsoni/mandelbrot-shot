@@ -13,6 +13,7 @@ target_include_directories(
     PRIVATE
         deps/glfw/include
         deps/glad-4.0-core/include
+        deps/stb/
 )
 
 add_subdirectory(deps/glfw)

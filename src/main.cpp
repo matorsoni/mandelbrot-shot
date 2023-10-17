@@ -1,10 +1,16 @@
 #include <iostream>
+#include <fstream> // for std::ifstream
+#include <string>
+#include <vector>
 
 #define GLFW_INCLUDE_NONE
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
 
-#include<string>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
+
 GLuint create_shader_program(const std::string& vert_file,
                              const std::string& frag_file);
 
@@ -14,8 +20,10 @@ struct Input
     float center[2] = {0.0f, 0.0f};
     float width = 100.0f;
     float height = 100.0f;
+    bool capture = false;
 };
 static void processInput(GLFWwindow* window, Input& input);
+void dump_frame(const std::string& img_file, int width, int height);
 
 void set_uniform_1f(GLuint program, const char* uniform_name, float value);
 void set_uniform_2f(GLuint program, const char* uniform_name, float x, float y);
@@ -109,6 +117,11 @@ int main()
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
         glfwSwapBuffers(window);
+
+        if(input.capture) {
+            dump_frame("dump.png", width, height);
+            input.capture = false;
+        }
     }
 
     glDeleteBuffers(1, &vbo);
@@ -123,8 +136,6 @@ int main()
 
 // ------------------------------------------------------------------------------------------------
 
-#include <fstream> // for std::ifstream
-//#include <utility> // for std::move
 static std::string load_text_file(const std::string& filename)
 {
     std::string text, line;
@@ -222,6 +233,19 @@ static void processInput(GLFWwindow* window, Input& input)
         input.zoom /= zoom_speed;
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         input.zoom *= zoom_speed;
+    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
+        input.capture = true;
+}
+
+void dump_frame(const std::string& img_file, int width, int height)
+{
+    std::cout << "Saving image " + img_file << std::endl;
+    const int stride = width * 3;
+    std::vector<unsigned char> buffer;
+    buffer.resize(stride * height);
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data());
+    //stbi_flip_vertically_on_write(true);
+    stbi_write_png(img_file.c_str(), width, height, 3, buffer.data(), stride * sizeof(unsigned char));
 }
 
 void set_uniform_1f(GLuint program, const char* uniform_name, float value)
