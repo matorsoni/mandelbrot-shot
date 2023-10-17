@@ -12,6 +12,8 @@ struct Input
 {
     float zoom = 1.0f;
     float center[2] = {0.0f, 0.0f};
+    float width = 100.0f;
+    float height = 100.0f;
 };
 static void processInput(GLFWwindow* window, Input& input);
 
@@ -30,7 +32,9 @@ int main()
     // #TODO: make it resizable
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-    GLFWwindow* window = glfwCreateWindow(640, 480, "Mandelbrot Zoom", NULL, NULL);
+    const int width = 1280;
+    const int height = 960;
+    GLFWwindow* window = glfwCreateWindow(width, height, "Mandelbrot Zoom", NULL, NULL);
 
     if (!window) {
         glfwTerminate();
@@ -88,6 +92,8 @@ int main()
     glUseProgram(shader_program);
 
     Input input;
+    input.width = static_cast<float>(width);
+    input.height = static_cast<float>(height);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -97,6 +103,8 @@ int main()
         processInput(window, input);
         set_uniform_1f(shader_program, "u_zoom", input.zoom);
         set_uniform_2f(shader_program, "u_center", input.center[0], input.center[1]);
+        set_uniform_1f(shader_program, "u_width", input.width);
+        set_uniform_1f(shader_program, "u_height", input.height);
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
@@ -194,7 +202,7 @@ GLuint create_shader_program(const std::string& vert_file, const std::string& fr
 
 static void processInput(GLFWwindow* window, Input& input)
 {
-    static constexpr float move_speed = 0.1f;
+    static constexpr float move_speed = 0.01f;
     static constexpr float zoom_speed = 1.01f;
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

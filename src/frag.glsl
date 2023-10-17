@@ -4,9 +4,9 @@ out vec4 frag_color;
 
 uniform float u_zoom;
 uniform vec2 u_center;
+uniform float u_width;
+uniform float u_height;
 
-float WIDTH = 640.0;
-float HEIGHT = 480.0;
 vec3 C1 = vec3(0.4, 0.0, 0.0);
 vec3 C2 = vec3(1.0, 1.0, 0.0);
 int MAX_ITER = 200;
@@ -40,8 +40,8 @@ vec3 mandelbrot(vec2 p)
 
 void main()
 {
-    float ratio = WIDTH / HEIGHT;
-    vec2 p_ = gl_FragCoord.xy / vec2(WIDTH, HEIGHT);
+    float ratio = u_width / u_height;
+    vec2 p_ = gl_FragCoord.xy / vec2(u_width, u_height);
     vec2 p = 2.0*p_ - vec2(1.0);
     p.x *= ratio;
 
